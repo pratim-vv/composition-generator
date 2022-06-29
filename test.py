@@ -4,7 +4,7 @@ from random import choice
 from scales import PC_SCALES
 
 def melody(score, tonic, amount: int, inst) :
-    scale = choice(PC_SCALES)
+    scale = choice(PC_SCALES.items())
     for i in range(amount) :
         next_pitch = choice(scale)
         score.add(Note(time=i, duration=1, pitch=tonic+next_pitch, amplitude=0.5, instrument=inst))
