@@ -1,10 +1,10 @@
 from musx import Score, Note, Seq, MidiFile
 from musx.midi.gm import Viola, Violin
 from random import choice
-from scales import PC_SCALES
+from equal_temperament_scales import ET_SCALES
 
 def melody(score, tonic, amount: int, inst) :
-    scale = choice(PC_SCALES.items())
+    scale = choice(ET_SCALES.items())
     for i in range(amount) :
         next_pitch = choice(scale)
         score.add(Note(time=i, duration=1, pitch=tonic+next_pitch, amplitude=0.5, instrument=inst))
