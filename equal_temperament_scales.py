@@ -33,7 +33,7 @@ ET_SCALES = {
 BASE_INTERVALS = {
     0 : Interval('P1'),
     1 : Interval('m2'),
-    2 : Interval('M3'),
+    2 : Interval('M2'),
     3 : Interval('m3'),
     4 : Interval('M3'),
     5 : Interval('P4'),
@@ -48,20 +48,25 @@ BASE_INTERVALS = {
 
 class ETScale(): 
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, cls: Union[List[int], str]) -> None:
+        if isinstance(cls, str) :
+            self.name = cls.upper()
+            self.pcs = ET_SCALES[self.name]
+        else :
+            self.name = 'Unnamed'
+            self.pcs = cls
 
     @staticmethod
-    def tetrachord_subsitution(inferior: Union[List[int], ETScale], superior: Union[List[int], ETScale]) -> List[int]:
+    def tetrachord_subsitution(inferior: Union[List[int], 'ETScale'], superior: Union[List[int], 'ETScale']) -> List[int]:
         first_half = inferior
         second_half = superior
         if isinstance(inferior, ETScale) :
-            first_half = ETScale.pcs
+            first_half = inferior.pcs
         if isinstance(superior, ETScale) :
-            second_half = superior
+            second_half = superior.pcs
         if 5 not in first_half or 7 not in second_half :
             raise ValueError('This function is based off of pre-20th century scale construction technqiues. The first scale must contain a perfect fourth and the second must have a perfect fifth.')
-        return first_half[:first_half.index(5)] + second_half[second_half.index(7):]
+        return first_half[:first_half.index(5)+1] + second_half[second_half.index(7):]
 
     def to_interval(self) -> List[Interval] :
         return [BASE_INTERVALS[pc] for pc in self.pcs]
@@ -71,9 +76,10 @@ class ETScale():
 
     def pitches(self, pitch:Union[Pitch, int, List[int], str]) -> List[Pitch] :
         degree_zero = pitch
-        if not isinstance(Pitch):
+        if not isinstance(pitch, Pitch):
             if isinstance(pitch, int) :
-                degree_zero = Pitch.from_keynum(int)
+                degree_zero = Pitch.from_keynum(pitch)
             else:
                 degree_zero = Pitch(pitch)
         return [interval.transpose(degree_zero) for interval in self.to_interval()]
+
