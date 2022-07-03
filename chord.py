@@ -10,7 +10,8 @@ CHORD_SYMBOLS = {
     'M7' : [Interval('M3'), Interval('P5'), Interval('M7')],
     'Mm7' : [Interval('M3'), Interval('P5'), Interval('m7')],
     'm7' : [Interval('m3'), Interval('P5'), Interval('m7')],
-    'hd7' : [Interval('m3'), Interval('d5'), Interval('m7')]
+    'hd7' : [Interval('m3'), Interval('d5'), Interval('m7')],
+    'fd7' : [Interval('m3'), Interval('d5'), Interval('d7')]
 }
 
 class Chord():
