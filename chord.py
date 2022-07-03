@@ -1,6 +1,8 @@
 from musx import Pitch, Interval, Score, Note
 from typing import List, Union
 
+from numpy import isin
+
 CHORD_SYMBOLS = {
     'M' : [Interval('M3'), Interval('P5')],
     'm' : [Interval('m3'), Interval('P5')],
@@ -43,9 +45,6 @@ class Chord():
                 score.add(Note(start, length, pitch, amplitude, instrument))
                 start += length
 
-
-
-
     def chord_tone(self, pitch: Union[Pitch, int, str]) -> bool :
         if not isinstance(pitch, Pitch) :
             pitch = Pitch(pitch)
@@ -53,5 +52,18 @@ class Chord():
             if p.pc() == pitch.pc() :
                 return True
         return False
+
+    def nearest_chord_tone(self, pitch: Union[Pitch, int, str]) -> Pitch :
+        if not isinstance(pitch, Pitch) :
+            pitch = Pitch(pitch)
+        midis = [p.keynum() for p in self.pitches]
+        pcs = [midi % 12 for midi in midis]
+        current_midi = pitch.keynum()
+        current_pc = current_midi % 12
+        if current_pc in pcs :
+            octave_difference = current_midi - midis[pcs.index(current_pc)]
+            if octave_difference >= 0 :
+                return Interval('P' + str(1 + 7 * octave_difference)).transpose(self.pitches[pcs.index(current_pc)])
+            return Interval('-P' + (str(1 + -7 * octave_difference))).transpose(self.pitches[pcs.index(current_pc)])
 
 
