@@ -4,16 +4,24 @@ from typing import List, Union
 from numpy import isin
 
 CHORD_SYMBOLS = {
-    'M' : [Interval('M3'), Interval('P5')],
-    'm' : [Interval('m3'), Interval('P5')],
-    'd' : [Interval('m3'), Interval('d5')],
-    'a' : [Interval('M3'), Interval('+5')],
+    'M' : [Interval('P1'), Interval('M3'), Interval('P5')],
+    'm' : [Interval('P1'), Interval('m3'), Interval('P5')],
+    'd' : [Interval('P1'), Interval('m3'), Interval('d5')],
+    'a' : [Interval('P1'), Interval('M3'), Interval('+5')],
+    'aug' : [Interval('P1'), Interval('M3'), Interval('+5')],
 
-    'M7' : [Interval('M3'), Interval('P5'), Interval('M7')],
-    'Mm7' : [Interval('M3'), Interval('P5'), Interval('m7')],
-    'm7' : [Interval('m3'), Interval('P5'), Interval('m7')],
-    'hd7' : [Interval('m3'), Interval('d5'), Interval('m7')],
-    'fd7' : [Interval('m3'), Interval('d5'), Interval('d7')]
+    'm6' : [Interval('P1'), Interval('m3'), Interval('P5'), Interval('M6')],
+
+    'M7' : [Interval('P1'), Interval('M3'), Interval('P5'), Interval('M7')],
+    'Mm7' : [Interval('P1'), Interval('M3'), Interval('P5'), Interval('m7')],
+    'm7' : [Interval('P1'), Interval('m3'), Interval('P5'), Interval('m7')],
+    'hd7' : [Interval('P1'), Interval('m3'), Interval('d5'), Interval('m7')],
+    'fd7' : [Interval('P1'), Interval('m3'), Interval('d5'), Interval('d7')],
+    'Mm7b5' : [Interval('P1'), Interval('M3'), Interval('d5'), Interval('m7')],
+    'a7' : [Interval('P1'), Interval('M3'), Interval('+5'), Interval('m7')],
+    'aug7' : [Interval('P1'), Interval('M3'), Interval('+5'), Interval('m7')],
+    'M7b5' : [Interval('P1'), Interval('M3'), Interval('d5'), Interval('M7')]
+
 }
 
 class Chord():
@@ -21,7 +29,6 @@ class Chord():
     def __init__(self, cls: Pitch, arg: str) -> None:
         self.root = cls
         intervals_from_root = CHORD_SYMBOLS[arg]
-        self.pitches = [cls]
         for interval in intervals_from_root:
             self.pitches.append(interval.transpose(cls))
 
@@ -60,10 +67,8 @@ class Chord():
         pcs = [midi % 12 for midi in midis]
         current_midi = pitch.keynum()
         current_pc = current_midi % 12
+        octave_difference = current_midi - midis[pcs.index(current_pc)]
         if current_pc in pcs :
-            octave_difference = current_midi - midis[pcs.index(current_pc)]
             if octave_difference >= 0 :
                 return Interval('P' + str(1 + 7 * octave_difference)).transpose(self.pitches[pcs.index(current_pc)])
             return Interval('-P' + (str(1 + -7 * octave_difference))).transpose(self.pitches[pcs.index(current_pc)])
-
-
