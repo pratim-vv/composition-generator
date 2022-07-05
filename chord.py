@@ -20,8 +20,19 @@ CHORD_SYMBOLS = {
     'Mm7b5' : [Interval('P1'), Interval('M3'), Interval('d5'), Interval('m7')],
     'a7' : [Interval('P1'), Interval('M3'), Interval('+5'), Interval('m7')],
     'aug7' : [Interval('P1'), Interval('M3'), Interval('+5'), Interval('m7')],
-    'M7b5' : [Interval('P1'), Interval('M3'), Interval('d5'), Interval('M7')]
+    'M7b5' : [Interval('P1'), Interval('M3'), Interval('d5'), Interval('M7')],
 
+    'M9' : [Interval('P1'), Interval('M3'), Interval('P5'), Interval('M7'), Interval('M9')],
+    'D9' : [Interval('P1'), Interval('M3'), Interval('P5'), Interval('m7'), Interval('M9')],
+    'Dm9' : [Interval('P1'), Interval('M3'), Interval('P5'), Interval('m7'), Interval('m9')],
+    'Mm9' : [Interval('P1'), Interval('m3'), Interval('P5'), Interval('M7'), Interval('M9')],
+    'm9' : [Interval('P1'), Interval('m3'), Interval('P5'), Interval('m7'), Interval('M9')],
+    'AugM9' : [Interval('P1'), Interval('M3'), Interval('+5'), Interval('M7'), Interval('M9')],
+    'AugD9' : [Interval('P1'), Interval('M3'), Interval('+5'), Interval('m7'), Interval('M9')],
+    'hd9' : [Interval('P1'), Interval('m3'), Interval('d5'), Interval('m7'), Interval('M9')],
+    'hdm9' : [Interval('P1'), Interval('m3'), Interval('d5'), Interval('m7'), Interval('m9')],
+    'd9' : [Interval('P1'), Interval('m3'), Interval('d5'), Interval('d7'), Interval('M9')],
+    'dm9' : [Interval('P1'), Interval('m3'), Interval('d5'), Interval('d7'), Interval('m9')]
 }
 
 class Chord():
@@ -67,8 +78,22 @@ class Chord():
         pcs = [midi % 12 for midi in midis]
         current_midi = pitch.keynum()
         current_pc = current_midi % 12
-        octave_difference = current_midi - midis[pcs.index(current_pc)]
         if current_pc in pcs :
+            octave_difference = current_midi - midis[pcs.index(current_pc)]
             if octave_difference >= 0 :
                 return Interval('P' + str(1 + 7 * octave_difference)).transpose(self.pitches[pcs.index(current_pc)])
             return Interval('-P' + (str(1 + -7 * octave_difference))).transpose(self.pitches[pcs.index(current_pc)])
+        distance = 7
+        current_closest = 0
+        for midi in midis :
+            temp = midi
+            while abs(temp - current_midi) >= 6 :
+                if temp > current_midi :
+                    temp -= 12
+                else :
+                    temp += 12
+            if abs(temp - current_midi) < distance:
+                current_closest = temp
+        return self.nearest_chord_tone(current_closest)
+
+
