@@ -22,6 +22,16 @@ ET_SCALES = {
     'PHRYGIAN' :[0, 1, 3, 5, 7, 8, 10],
     'LOCRIAN' : [0, 1, 3, 5, 6, 8, 10],
 
+    'LYDIAN_AUGMENTED' : [0, 2, 4, 6, 8, 9, 11],
+    'LYDIAN_DIMINISHED' : [0, 2, 3, 6, 7, 9, 11],
+    'LYDIAN_FLAT_SEVENTH' : [0, 2, 4, 6, 7, 9, 10],
+    'AUXILLARY_AUGMENTED' : [0, 2, 4, 6, 8, 10],
+    'AUXILLARY_DIMINSHED' : [0, 2, 3, 5, 6, 8, 9, 11],
+    'AUXILLARY_DIMINSHED_BLUES' : [0, 1, 3, 4, 6, 7, 9, 10],
+    'MAJOR_FLAT_SEVENTH' : [0, 2, 4, 5, 7, 9, 11],
+    'MAJOR_AUGMENTED_FIFTH' : [0, 2, 4, 5, 7, 8, 9, 11],
+    'AFRICAN_AMERICAN_BLUES' : [0, 2, 3, 4, 5, 6, 7, 9, 10, 11],
+
     'RYU_KYU' : [0, 4, 5, 7, 11],
     'MIN_YO' :[0, 3, 5, 7, 10],
     'RITSU' :[0, 2, 5, 7, 9],
