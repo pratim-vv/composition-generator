@@ -39,9 +39,15 @@ class Chord():
 
     def __init__(self, cls: Pitch, arg: str) -> None:
         self.root = cls
+        self.pitches = []
         intervals_from_root = CHORD_SYMBOLS[arg]
         for interval in intervals_from_root:
-            self.pitches.append(interval.transpose(cls))
+            base_interval = Interval([interval.span, interval.qual, 0, interval.sign])
+            current = base_interval.transpose(cls)
+            for i in range(interval.xoct) :
+                current = Interval('P8').transpose(current)
+            self.pitches.append(current)
+            #self.pitches.append(interval.transpose(cls))
 
     def implement(self, score: Score, time: float, duration: float, amplitude: float, instruments: Union[int, List[int]]) -> None:
         if isinstance(instruments, int) :
@@ -56,6 +62,11 @@ class Chord():
             if pitch_idx >= len(self.pitches) :
                 curr_octave += 1
                 pitch_idx = 0
+
+    def full_chord(self, score: Score, time: float, duration: float, amplitude: float, instrument: int) -> None :
+        for pitch in self.pitches :
+            score.add(Note(time, duration, pitch, amplitude, instrument))
+        
 
     def arpeggiate(self, score: Score, start: float, length: float, instances: int, amplitude=0.5, instrument=0) -> None:
         for i in range(instances) :
