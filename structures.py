@@ -7,35 +7,38 @@ from numpy import append
 
 rhythyms = [1, 3/4, 1/2, 3/8, 1/4, 3/16, 1/8, 1/16]
 
-def rhythym_sceme(beats: int) -> List[Tuple[float, bool]] :
+def rhythym_scheme(beats: float) -> List[Tuple[float, bool]] :
     to_return = []
-    current = 0
+    current = 0.0
     rest = 0
+    #update current
     while current != beats :
         is_rest = True
+        idx = 7
         if current + 1 <= beats:
-            to_return.append((current + choice(rhythyms), is_rest))
+            idx = 0
         elif current + 3/4 <= beats:
-            to_return.append((current + choice(rhythyms[1:]), is_rest))
+            idx = 1
         elif current + 1/2 <= beats:
-            to_return.append((current + choice(rhythyms[:2]), is_rest))
+            idx = 2
         elif current + 3/8 <= beats:
-            to_return.append((current + choice(rhythyms[:3]), is_rest))
+            idx = 3
         elif current + 1/4 <= beats:
-            to_return.append((current + choice(rhythyms[:4]), is_rest))
+            idx = 4
         elif current + 3/16 <= beats:
-            to_return.append((current + choice(rhythyms[:5]), is_rest))
+            idx = 5
         elif current + 1/8 <= beats:
-            to_return.append((current + choice(rhythyms[:6]), is_rest))
-        else:
-            to_return.append((current + 1/16, is_rest))
+            idx = 6
+        chosen = choice(rhythyms[idx:])
+        current += chosen
+        to_return.append((is_rest, chosen))
     return to_return
 
 def apply(score: Score, notes: List[Pitch], rhythyms: List[Tuple[float, bool]], tempo: int, inst: int) -> None:
     start = 0
-    for notes in rhythyms:
-        dur = rhythm(tempo, notes[1])
-        if notes[0]:
+    for rhy in rhythyms:
+        dur = tempo * rhy[1] / 60.0
+        if rhy[0]:
             score.add(Note(start, dur, choice(notes), .5, inst))
         start += dur
 

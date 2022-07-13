@@ -4,7 +4,7 @@ from musx.midi.gm import Trombone, TenorSax, Trumpet, MutedTrumpet, ElectricPian
 from random import choice
 from equal_temperament_scales import ETScale
 from chord import Chord
-from structures import rhythym_sceme
+from structures import rhythym_scheme, apply
 
 def play_scale(score, scale, tonic, inst) :
     if isinstance(scale, ETScale):
@@ -21,7 +21,7 @@ if __name__ == '__main__' :
     composition = Seq()
     instrumentation = MidiFile.metatrack(ins={0 : ElectricPiano1, 1 : ElectricPiano2, 2 : Trumpet, 3 : MutedTrumpet})
     score = Score(out=composition)
-    #scale = ETScale('pentatonic_major')
+    scale = ETScale('chromatic')
     #play_scale(score, scale, 66, 0)
     #play_scale(score, scale, 66+12, 1)
     chord = Chord(Pitch('C3'), 'M7')
@@ -36,9 +36,11 @@ if __name__ == '__main__' :
     #Chord(Pitch('F3'), 'M7').arpeggiate(score, 3, .25, 4)
     #Chord(Pitch('G3'), 'M').arpeggiate(score, 6, .25, 4)
     #chord.implement(score, 9, 4, .5, [0, 1])
-    chord.full_chord(score, 0, rhythm(1, 60), .5, 0)
-    print(rhythym_sceme(4))
+    #chord.full_chord(score, 0, rhythm(1, 60), .5, 0)
+    scheme = rhythym_scheme(4)
+    print(scheme)
+    apply(score, scale.pitches(67), scheme, 120, 0)
 
     #next.full_chord(score, 3, 3, .5, 0)
     #third.full_chord(score, 6, 3, .5, 0)
-    #file = MidiFile('testing.midi', [instrumentation, composition]).write()
+    file = MidiFile('testing.midi', [instrumentation, composition]).write()
