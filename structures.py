@@ -34,10 +34,9 @@ def rhythym_scheme(beats: float) -> List[Tuple[float, bool]] :
         to_return.append((is_rest, chosen))
     return to_return
 
-def apply(score: Score, notes: List[Pitch], rhythyms: List[Tuple[float, bool]], tempo: int, inst: int) -> None:
-    start = 0
+def apply(score: Score, notes: List[Pitch], rhythyms: List[Tuple[float, bool]], tempo: float, inst: int, start=0) -> None:
     for rhy in rhythyms:
-        dur = tempo * rhy[1] / 60.0
+        dur = ((tempo / rhy[1]) / 60.0) ** -1
         if rhy[0]:
             score.add(Note(start, dur, choice(notes), .5, inst))
         start += dur

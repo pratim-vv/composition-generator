@@ -21,7 +21,7 @@ if __name__ == '__main__' :
     composition = Seq()
     instrumentation = MidiFile.metatrack(ins={0 : ElectricPiano1, 1 : ElectricPiano2, 2 : Trumpet, 3 : MutedTrumpet})
     score = Score(out=composition)
-    scale = ETScale('chromatic')
+    scale = ETScale('pentatonic_major')
     #play_scale(score, scale, 66, 0)
     #play_scale(score, scale, 66+12, 1)
     chord = Chord(Pitch('C3'), 'M7')
@@ -39,7 +39,8 @@ if __name__ == '__main__' :
     #chord.full_chord(score, 0, rhythm(1, 60), .5, 0)
     scheme = rhythym_scheme(4)
     print(scheme)
-    apply(score, scale.pitches(67), scheme, 120, 0)
+    apply(score, scale.pitches(67), scheme, 60, 0)
+    apply(score, scale.pitches(79), scheme, 60, 1)
 
     #next.full_chord(score, 3, 3, .5, 0)
     #third.full_chord(score, 6, 3, .5, 0)
