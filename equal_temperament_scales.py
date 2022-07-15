@@ -1,7 +1,6 @@
 from typing import Union, List
 from more_itertools import first
 from musx import Interval, Pitch
-from numpy import isin
 
 ET_SCALES = {
     'MAJOR' : [0, 2, 4, 5, 7, 9, 11],
@@ -58,38 +57,34 @@ BASE_INTERVALS = {
 
 class ETScale(): 
 
-    def __init__(self, cls: Union[List[int], str]) -> None:
+    def __init__(self, cls: Union[List[int], str], pitch: Pitch) -> None:
         if isinstance(cls, str) :
-            self.name = cls.upper()
-            self.pcs = ET_SCALES[self.name]
+            self.type = cls.upper()
+            self.pcs = ET_SCALES[self.type]
         else :
-            self.name = 'Unnamed'
+            self.type = 'Unnamed'
             self.pcs = cls
+        self.tonic = pitch
+        self.intervals = [BASE_INTERVALS[pc] for pc in self.pcs] 
+        self.pitches = [interval.transpose(pitch) for interval in self.intervals]
+        
 
     @staticmethod
-    def tetrachord_subsitution(inferior: Union[List[int], 'ETScale'], superior: Union[List[int], 'ETScale']) -> List[int]:
-        first_half = inferior
+    def tetrachord_subsitution(inferior: 'ETScale', superior: Union[List[int], 'ETScale']) -> 'ETScale':
+        first_half = inferior.pcs
         second_half = superior
-        if isinstance(inferior, ETScale) :
-            first_half = inferior.pcs
         if isinstance(superior, ETScale) :
             second_half = superior.pcs
         if 5 not in first_half or 7 not in second_half :
             raise ValueError('This function is based off of pre-20th century scale construction technqiues. The first scale must contain a perfect fourth and the second must have a perfect fifth.')
-        return first_half[:first_half.index(5)+1] + second_half[second_half.index(7):]
+        return ETScale(first_half[:first_half.index(5)+1] + second_half[second_half.index(7):], inferior.tonic)
 
-    def to_interval(self) -> List[Interval] :
-        return [BASE_INTERVALS[pc] for pc in self.pcs]
+    def get_intervals(self) -> List[Interval] :
+        return self.intervals
 
-    def melodic_intervals(self) -> List[Interval]:
+    def get_melodic_intervals(self) -> List[Interval]:
         return [BASE_INTERVALS[next - curr] for curr, next in zip(self.pcs, self.pcs[1:])]
 
-    def pitches(self, pitch:Union[Pitch, int, List[int], str]) -> List[Pitch] :
-        degree_zero = pitch
-        if not isinstance(pitch, Pitch):
-            if isinstance(pitch, int) :
-                degree_zero = Pitch.from_keynum(pitch)
-            else:
-                degree_zero = Pitch(pitch)
-        return [interval.transpose(degree_zero) for interval in self.to_interval()]
+    def get_pitches(self) -> List[Pitch] :
+        return self.pitches
 
