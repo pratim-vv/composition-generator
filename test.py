@@ -25,7 +25,8 @@ if __name__ == '__main__' :
     scale1 = ETScale('major', Pitch('C3'))
     scale2 = ETScale('minor', Pitch('C3'))
 
-    play_scale(score, ETScale.tetrachord_subsitution(scale1, scale2), 2)
+    #play_scale(score, ETScale.tetrachord_subsitution(scale1, scale2), 2)
     print(scale1.get_pitches())
+    print(ETScale.tetrachord_subsitution.__doc__)
     
    # file = MidiFile('testing.midi', [instrumentation, composition]).write()

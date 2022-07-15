@@ -55,9 +55,26 @@ BASE_INTERVALS = {
     12 : Interval('P8')
 }
 
-class ETScale(): 
+class ETScale():
+    """
+    This is class for representing scales that use equal temmperament tuning.
+
+    Attributes: 
+    type (str) -- Type of scale
+    pcs (List[int]) -- Distance of each note from tonic in semitones
+    tonic (Pitch) -- Tonic pitch
+    intervals (List[Intervals]) -- Interval of each pitch from tonic
+    pitches (List[Pitch]) -- list of pitches
+    """
 
     def __init__(self, cls: Union[List[int], str], pitch: Pitch) -> None:
+        """
+        Constructor for ETScale class.
+
+        Parameters:
+        cls (List[int] or str) -- Computes scale using pcs (List[int]) or scale name (str)
+        pitch (Pitch) -- Tonic of scale
+        """
         if isinstance(cls, str) :
             self.type = cls.upper()
             self.pcs = ET_SCALES[self.type]
@@ -71,6 +88,16 @@ class ETScale():
 
     @staticmethod
     def tetrachord_subsitution(inferior: 'ETScale', superior: Union[List[int], 'ETScale']) -> 'ETScale':
+        """
+        Produces a new scale made up from two others using pre-20th century tetrachord subsitution.
+
+        Parameters:
+        inferior (ETScale) -- Provides tonic and uses inferior tetrachord in new scale
+        superior (List[int] or ETScale) -- Uses superior tetrachord in new scale
+
+        Returns:
+        ETScale -- Equal tempered scale using inferior tetrachord from first parameter and superior tetrachord from second parameter
+        """
         first_half = inferior.pcs
         second_half = superior
         if isinstance(superior, ETScale) :
@@ -79,12 +106,30 @@ class ETScale():
             raise ValueError('This function is based off of pre-20th century scale construction technqiues. The first scale must contain a perfect fourth and the second must have a perfect fifth.')
         return ETScale(first_half[:first_half.index(5)+1] + second_half[second_half.index(7):], inferior.tonic)
 
-    def get_intervals(self) -> List[Interval] :
+    def get_intervals(self) -> List[Interval]:
+        """
+        Returns intervals between scale degrees and tonic.
+
+        Returns:
+        List[Interval] -- An interval list of intervals of each scale degree in relevance to the tonic
+        """
         return self.intervals
 
     def get_melodic_intervals(self) -> List[Interval]:
+        """
+        Returns melodic intervals between consecutive scale degrees.
+
+        Returns:
+        List[Interval] -- An interval list of consecutive scale degrees within the scale
+        """
         return [BASE_INTERVALS[next - curr] for curr, next in zip(self.pcs, self.pcs[1:])]
 
-    def get_pitches(self) -> List[Pitch] :
+    def get_pitches(self) -> List[Pitch]:
+        """
+        Returns pitches of the scale.
+
+        Returns:
+        List[Pitch] -- A list of scale pitches
+        """
         return self.pitches
 
