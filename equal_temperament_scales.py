@@ -1,3 +1,5 @@
+from multiprocessing.sharedctypes import Value
+from tracemalloc import start
 from typing import Union, List
 from more_itertools import first
 from musx import Interval, Pitch
@@ -129,7 +131,41 @@ class ETScale():
         Returns pitches of the scale.
 
         Returns:
-        List[Pitch] -- A list of scale pitches
+        List[Pitch] -- A list of the scale's pitches
         """
         return self.pitches
+
+    def melodic_range(self, interval=Interval('P8'), scale_degree=1, start_above=True) -> List[Pitch]:
+        """
+        Returns pitches within range starting from scale degree, inclusive.
+
+        Parameters:
+        interval (Interval) -- List of pitches within interval range
+        scale_degree (int) -- Scale degree to start on when computing melodic bounds
+        start_above (bool) -- Whether or not starting scale degree is above/on (True) the scale's tonic or below (False)
+
+        Returns:
+        List[Pitch] -- A list of pitches diatonic to the scale that lie within the specified intervallic range
+        """
+        if interval.sign == -1:
+            raise ValueError('Does not support negative interval ranges')
+        idx = scale_degree - 1
+        if idx < 0 or idx >= len(self.pitches):
+            raise ValueError('Invalid scale degree')
+        to_return = []
+        semitones_traveled, octaves_traveled, semitone_range = 0, 0, interval.semitones()
+        while semitones_traveled <= semitone_range:
+            current_pitch = self.pitches[idx] if start_above else Interval('-P8').transpose(self.pitches[idx])
+            for i in range(octaves_traveled):
+                current_pitch = Interval('P8').transpose(current_pitch)
+            to_return.append(current_pitch)
+            if len(to_return) >= 2:
+                semitones_traveled += current_pitch.keynum() - to_return[-2].keynum()
+            idx += 1
+            if idx >= len(self.pitches):
+                idx = 0
+                octaves_traveled += 1
+        return to_return[:-1]
+
+
 
