@@ -167,5 +167,32 @@ class ETScale():
                 octaves_traveled += 1
         return to_return[:-1]
 
+    def diatonic(self, pitches: Union[Pitch, List[Pitch]], name_blind=False) -> bool:
+        """
+        Checks whether or not given pitches are diatonic to scale.
+
+        Parameters:
+        pitches (Pitch or List[Pitch]) -- Pitches to analyze
+        name_blind (bool) -- Whether pitch name matters (False) or not (True) when determining \x1B[3mpitches\x1B[0m is diatonic
+
+        Returns:
+        bool -- True if \x1B[3mpitches\x1B[0m is diatonic, False otherwise
+        """
+        if isinstance(pitches, Pitch):
+            pitches = [pitches]
+        if not name_blind:
+            pnums = [pitch.pnum() for pitch in self.pitches]
+            for pitch in pitches:
+                if pitch.pnum() not in pnums:
+                    return False
+            return True
+        standard_pcs = [pitch.keynum() % 12 for pitch in self.pitches]
+        for pitch in pitches:
+            if pitch.keynum() % 12 not in standard_pcs:
+                return False
+        return True
+
+
+
 
 

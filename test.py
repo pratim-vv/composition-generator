@@ -19,11 +19,17 @@ def play_scale(score, scale, inst) :
 
 
 if __name__ == '__main__' :
+    """
     composition = Seq()
     instrumentation = MidiFile.metatrack(ins={0 : ElectricPiano1, 1 : ElectricPiano2, 2 : Trumpet, 3 : MutedTrumpet})
     score = Score(out=composition)
-    scale1 = ETScale('major', Pitch('C3'))
     scale2 = ETScale('minor', Pitch('C3'))
     print(scale2.melodic_range(interval=Interval('P12')))
+    """
+    scale1 = ETScale('major', Pitch('C3'))
+    print(scale1.diatonic([Pitch('C3'), Pitch('D8')]))
+    print(scale1.diatonic(Pitch('B#2')))
+    print(scale1.diatonic(Pitch('B#2'), True))
+    print(scale1.diatonic([Pitch('C3'), Pitch('B#6')]))
     
    # file = MidiFile('testing.midi', [instrumentation, composition]).write()
