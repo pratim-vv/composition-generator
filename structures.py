@@ -41,6 +41,34 @@ def apply(score: Score, notes: List[Pitch], rhythyms: List[Tuple[float, bool]], 
             score.add(Note(start, dur, choice(notes), .5, inst))
         start += dur
 
+def range_to_melody(number: int, breadth: List[Pitch], start=None) -> List[Pitch]:
+    if start is None:
+        start = breadth[0]
+    melody = [start]
+    midi_keys = {}
+    for pitch in breadth:
+        midi_keys[pitch.keynum()] = pitch
+    direction = (0, 0) #number of intervals in direction, -1 for down 1 for up
+    fifth = True
+    unison = True
+    recovery = (False, 'step')
+    for i in range(number-1):
+        valid_keys = []
+        past_pitch = melody[-1].keynum()
+        if recovery[0]:
+            if recovery[1] == 'step':
+                if direction[1] == -1:
+                    pass                    
+
+
+
+                
+
+
+
+
+
+
 
 
         
